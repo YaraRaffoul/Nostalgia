@@ -13,9 +13,10 @@ public class Game1Manager : MonoBehaviour
         won,
         lost
     }
-    public gameState state;
+    public static gameState state;
     public  Slider timerSlider;
     Timer timer;
+    public static int numbOfBricks = 7;
     
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class Game1Manager : MonoBehaviour
         timer.setTime(60);
         timerSlider.maxValue = 60;
         timerSlider.value = timerSlider.maxValue;
+        PlayerPrefs.SetInt("numberOfBricks", numbOfBricks);
         
     }
 
@@ -38,17 +40,16 @@ public class Game1Manager : MonoBehaviour
         {
             PlayerPrefs.SetInt("NumberOfLives", PlayerPrefs.GetInt("NumberOfLives") - 1);
             
-            timer.setTime(60);
-            //Destroy(timerSlider);
-            //PlayerPrefs.SetInt("timerIsStopped", 1);
-            //Debug.Log("the timer is stoped");
+            //timer.setTime(60);
             
-           // PlayerPrefs.SetFloat("gameTime", 60);
-            //Debug.Log("the game time is set to 60");
-            //PlayerPrefs.SetInt("timerIsStopped", 0);
             SceneManager.LoadScene("Life");
             
         }
+         if(PlayerPrefs.GetInt("numberOfBricks") == 0)
+        {
+            SceneManager.LoadScene("Life");
+        }
     }
+       
     
 }
