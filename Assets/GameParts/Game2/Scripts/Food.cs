@@ -1,36 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
+//using System;
+using Unity.Collections;
 using UnityEngine;
 
 public class Food : MonoBehaviour
 {
     public BoxCollider2D gridArea;
-    // Start is called before the first frame update
     void Start()
     {
         RandomizePosition();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-
-    }
-    private void RandomizePosition() 
+    Vector2 RandomizePosition()
     {
         Bounds bounds = this.gridArea.bounds;
-        float x = Random.Range(bounds.min.x, bounds.max.x); 
-        float y = Random.Range(bounds.min.y, bounds.max.y );
+        float x = Random.Range(bounds.min.x + 1, bounds.max.x - 1); 
+        float y = Random.Range(bounds.min.y + 1, bounds.max.y - 1);
         
-        this.transform.position = new Vector3(Mathf.Round(x), Mathf.Round(y ), 0.0f); 
+        return new Vector2(x, y);
     }
-    private void OnTriggerEnter2D(Collider2D other) {
-        if(other.tag == "Snake")
+
+    void ChangeFoodPosition() {
+        Vector2 pos = RandomizePosition();
+        float x = pos.x;
+        float y = pos.y;
+        while(!Snake.checkForFoodPosition(x, y))
         {
-            RandomizePosition();
-           
+            pos = RandomizePosition();
+            x = pos.x;
+            y = pos.y;
+        }
+        this.transform.position = new Vector3(Mathf.Round(x), Mathf.Round(y), 0.0f);
+    }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        
+        if (other.tag == "Head")
+        {
+            int numberOfEatenFood = PlayerPrefs.GetInt("numberOfEatenFood");
+            numberOfEatenFood++;
+            PlayerPrefs.SetInt("numberOfEatenFood", numberOfEatenFood);
+
+            ChangeFoodPosition();
+            
         }
     }
+    
 }
